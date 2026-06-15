@@ -102,6 +102,8 @@
                 color: #ffffff !important;
                 padding: 0 !important;
                 margin: 0 !important;
+                width: 297mm !important;
+                height: 210mm !important;
             }
 
             .no-print {
@@ -111,8 +113,8 @@
             .print-wrapper {
                 padding: 0 !important;
                 margin: 0 !important;
-                width: 100vw !important;
-                height: 100vh !important;
+                width: 297mm !important;
+                height: 210mm !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: center !important;
@@ -120,17 +122,18 @@
             }
 
             .certificate-container {
-                max-width: 100% !important;
-                width: 100vw !important;
-                height: 100vh !important;
-                aspect-ratio: 1.414 / 1 !important;
+                width: 297mm !important;
+                height: 210mm !important;
+                max-width: 297mm !important;
+                max-height: 210mm !important;
                 box-shadow: none !important;
                 border: none !important;
                 background-color: #000000 !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 page-break-inside: avoid;
-                padding: 2.5rem !important;
+                padding: 4.5rem !important; /* Balanced layout inside precise A4 constraints */
+                box-sizing: border-box !important;
             }
 
             * {
@@ -139,7 +142,7 @@
             }
 
             @page {
-                size: landscape;
+                size: A4 landscape;
                 margin: 0;
             }
         }
