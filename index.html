@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VicScreen Certificate Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --brand-color: #5766ff;
+            --vs-black: #000000;
+            --vs-white: #ffffff;
+            --vs-grey: #121212;
+            --line-color: rgba(87, 102, 255, 0.3);
+        }
+
+        body {
+            background-color: #080808;
+            color: var(--vs-white);
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Headings: Arial Black, All Caps */
+        .heading-font {
+            font-family: 'Arial Black', 'Arial Bold', Gadget, sans-serif;
+            font-weight: 900;
+            text-transform: uppercase !important;
+            letter-spacing: 0.08em;
+        }
+
+        /* Contemporary Minimalist Certificate Container (A4 Landscape) */
+        .certificate-container {
+            width: 100%;
+            max-width: 1050px;
+            aspect-ratio: 1.414 / 1;
+            background-color: var(--vs-black);
+            background-image: radial-gradient(circle at 50% 50%, rgba(87, 102, 255, 0.06) 0%, transparent 80%);
+            color: var(--vs-white);
+            border: 1px solid var(--line-color);
+            position: relative;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 50px rgba(87, 102, 255, 0.05);
+            overflow: hidden;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Contemporary Architectural Layout Accents */
+        .inner-border {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            right: 24px;
+            bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* Modern Crosshair Corner Accents */
+        .crosshair {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            z-index: 5;
+        }
+        .crosshair::before, .crosshair::after {
+            content: '';
+            position: absolute;
+            background: var(--brand-color);
+        }
+        .crosshair::before {
+            height: 1px;
+            width: 100%;
+            top: 50%;
+        }
+        .crosshair::after {
+            width: 1px;
+            height: 100%;
+            left: 50%;
+        }
+
+        .ch-top-left { top: 9px; left: 9px; }
+        .ch-top-right { top: 9px; right: 9px; }
+        .ch-bottom-left { bottom: 9px; left: 9px; }
+        .ch-bottom-right { bottom: 9px; right: 9px; }
+
+        .interactive-glow {
+            text-shadow: 0 0 20px rgba(87, 102, 255, 0.4);
+            transition: text-shadow 0.3s ease;
+        }
+
+        /* PRINT STYLING TARGETING LANDSCAPE PDF GENERATION */
+        @media print {
+            body {
+                background-color: #000000 !important;
+                color: #ffffff !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .print-wrapper {
+                padding: 0 !important;
+                margin: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                background-color: #000000 !important;
+            }
+
+            .certificate-container {
+                max-width: 100% !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                aspect-ratio: 1.414 / 1 !important;
+                box-shadow: none !important;
+                border: none !important;
+                background-color: #000000 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                page-break-inside: avoid;
+                padding: 2.5rem !important;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center py-8 px-4 md:px-8">
+
+    <!-- Config Panel -->
+    <div class="no-print w-full max-w-4xl bg-zinc-900 border border-zinc-800 rounded-3xl p-6 mb-8 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex-grow">
+                <h2 class="text-xl font-black tracking-tight flex items-center gap-2 heading-font text-white">
+                    <i class="fa-solid fa-signature text-[#5766ff]"></i> Certificate Configurator
+                </h2>
+                
+                <div class="mt-4 max-w-md">
+                    <label for="student-name" class="text-[10px] font-black uppercase tracking-wider text-zinc-400 mb-1.5 block heading-font">Recipient Name</label>
+                    <input 
+                        type="text" 
+                        id="student-name" 
+                        placeholder="Type recipient's name..." 
+                        maxlength="45"
+                        oninput="updateCertificateName()"
+                        class="w-full px-4 py-3 bg-zinc-950 text-white border border-zinc-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5766ff] transition-all text-sm">
+                </div>
+            </div>
+            
+            <div class="flex flex-col items-stretch md:items-end gap-2 shrink-0">
+                <button onclick="window.print()" class="flex items-center justify-center gap-2 px-8 py-4 bg-[#5766ff] hover:bg-[#4d5beb] text-white rounded-full font-bold tracking-wide shadow-lg transition-all transform hover:scale-105 active:scale-95 heading-font text-xs">
+                    <i class="fa-solid fa-file-pdf"></i> Save as PDF / Print
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Certificate Wrapper -->
+    <div class="print-wrapper w-full max-w-4xl flex items-center justify-center">
+        <div class="certificate-container p-16 md:p-20">
+            
+            <!-- Structural Layering -->
+            <div class="inner-border"></div>
+            
+            <!-- Minimalist Crosshair Corners -->
+            <div class="crosshair ch-top-left"></div>
+            <div class="crosshair ch-top-right"></div>
+            <div class="crosshair ch-bottom-left"></div>
+            <div class="crosshair ch-bottom-right"></div>
+
+            <!-- Top Brand/Logo Alignment -->
+            <div class="flex justify-between items-center z-10">
+                <!-- Program branding tag -->
+                <div class="text-left">
+                    <span class="tracking-[0.25em] font-black text-[10px] text-[#5766ff] heading-font block">Official Certification</span>
+                    <span class="text-[9px] text-zinc-500 tracking-wider uppercase block mt-1">VicScreen Online Portal</span>
+                </div>
+
+                <!-- Official Requested Image Logo -->
+                <div class="h-10 flex items-center">
+                    <img 
+                        id="vicscreen-logo"
+                        src="https://upload.wikimedia.org/wikipedia/commons/3/33/VicScreen_Logo.png" 
+                        alt="VicScreen Logo" 
+                        class="h-full object-contain filter invert brightness-200">
+                </div>
+            </div>
+
+            <!-- Center Body -->
+            <div class="text-center my-auto z-10 py-4">
+                <p class="text-zinc-500 uppercase tracking-[0.2em] text-[10px] heading-font mb-2">This is to certify that</p>
+                
+                <!-- Dynamic Name Presentation -->
+                <h2 id="display-name" class="text-4xl md:text-5xl font-black text-white py-2 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center interactive-glow heading-font tracking-wide">
+                    ENTER NAME ABOVE
+                </h2>
+                
+                <div class="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#5766ff] to-transparent mx-auto my-6"></div>
+                
+                <p class="text-zinc-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+                    has successfully completed 
+                    <span class="block mt-3 text-white font-black text-lg tracking-wider uppercase heading-font">
+                        VicScreen’s Film Friendly Online Learning program
+                    </span>
+                </p>
+            </div>
+
+            <!-- Bottom Row: Centered Minimalist Alignment -->
+            <div class="text-center pt-6 border-t border-zinc-900 z-10">
+                <span class="block text-[10px] font-black text-[#5766ff] mb-1 heading-font">Date Issued</span>
+                <span id="display-date" class="text-sm font-bold text-white tracking-widest heading-font">--/--/----</span>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function setTodaysDate() {
+            const today = new Date();
+            formatAndDisplayDate(today);
+        }
+
+        function updateCertificateName() {
+            const inputName = document.getElementById('student-name').value.trim();
+            const nameDisplay = document.getElementById('display-name');
+            if (inputName) {
+                nameDisplay.innerText = inputName;
+                nameDisplay.classList.add('text-white');
+                nameDisplay.classList.remove('text-[#5766ff]/30');
+            } else {
+                nameDisplay.innerText = "ENTER NAME ABOVE";
+                nameDisplay.classList.add('text-[#5766ff]/30');
+                nameDisplay.classList.remove('text-white');
+            }
+        }
+
+        function formatAndDisplayDate(dateObj) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('en-AU', options);
+            document.getElementById('display-date').innerText = formattedDate;
+        }
+
+        // Initialize today's date automatically on load
+        setTodaysDate();
+    </script>
+</body>
+</html>
